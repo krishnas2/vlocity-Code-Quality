@@ -462,10 +462,7 @@ $scope.showjiraSuccess=true;
   
   $scope.captureddetails=function(){
 	$scope.showhandshakeprogress=true;
-	$scope.sfdccon='';
-	//$state.reload();
-	document.getElementById('sfdccons').innerHTML=$scope.sfdccon;
-	$scope.$apply();
+
 	socket.emit('sfdcobjdetails', $scope.obj);
 	socket.emit('sfdcdetails', $scope.details);
   }

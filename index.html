@@ -467,10 +467,7 @@ $scope.showjiraSuccess=true;
   $scope.capturedobj=function(){
   $scope.objjobscon='';
   $scope.objjobsconerr='';
-  $scope.sfdccon='';
-	//$state.reload();
-	document.getElementById('sfdccons').innerHTML=$scope.sfdccon;
-	$scope.$apply();
+  
 	socket.emit('sfdcobjdetails', $scope.obj);
   }
   $scope.jiranextstep=function(){

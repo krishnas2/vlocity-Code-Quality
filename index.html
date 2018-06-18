@@ -63,7 +63,7 @@
 		<br/>
 		<p>1. Handshake : We will be establishing connection to salesforce org using connected App</p>
 		<p>2. Object Details : Based on the object Details provided we will be executing unit testing check<p>
-		<p>3. JIRA Status: If there are no error during execution we will update JIRA Status<p>
+		<p>3. JIRA Status: If there are no error during execution we will update JIRA Status <p>
 <br/>
 		<p> Real Time overview of execution status is provided through checkbox for viewing logs. After after Successful step, a tick mark is appended at navigation bar.</p>
 		<p>The object Details capturing can further be enhanced for multiple objects at one-time.</p>
@@ -462,13 +462,16 @@ $scope.showjiraSuccess=true;
   
   $scope.captureddetails=function(){
 	$scope.showhandshakeprogress=true;
-
-	socket.emit('sfdcobjdetails', $scope.obj);
 	socket.emit('sfdcdetails', $scope.details);
   }
   $scope.capturedobj=function(){
   $scope.objjobscon='';
   $scope.objjobsconerr='';
+  $scope.sfdccon='';
+	//$state.reload();
+	document.getElementById('sfdccons').innerHTML=$scope.sfdccon;
+	$scope.$apply();
+	socket.emit('sfdcobjdetails', $scope.obj);
   }
   $scope.jiranextstep=function(){
 

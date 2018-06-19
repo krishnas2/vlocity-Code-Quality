@@ -14,6 +14,10 @@
 #Handshake {padding-top:50px;height:900px;max-height:900px;color: #fff;white-space: nowrap; background-color: #009688;}
 #Object {padding-top:50px;height:900px;max-height:900px;color: #fff;white-space: nowrap; background-color: #6762a6;}
 #JIRA {padding-top:50px;height:900px;max-height:900px;color: #fff;white-space: nowrap; background-color: #000;}
+.btn-bs-file{
+position: relative;
+    overflow: hidden;
+}
 .btn-bs-file input[type="file"]{
 position: absolute;
     top: 0;
@@ -51,7 +55,7 @@ position: absolute;
         <li class="active"><a href="#process">Home</a></li>
         <li><a href="#Handshake">Handshake <span class="glyphicon  btn-success " ng-show="handshakesuccess">&#xe013;</span></a> </li>
         <li><a href="#Object">Object<span class="glyphicon  btn-success " ng-show="objectsuccess">&#xe013;</span></a></li>
-		<li><a href="#JIRA">JIRA</a></li>
+		<li><a href="#JIRA"><span class="glyphicon  btn-success " ng-show="showjiraSuccess">&#xe013;</span>JIRA</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{username}}</a></li>

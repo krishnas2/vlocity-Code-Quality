@@ -198,10 +198,21 @@ var drtype=(lis,name,client)=>{
 	switch(lis[0]['vlocity_cmt__Type__c']){
 		case "Extract":
 		case "Extract (JSON)":
+		client.emit('objjobs',"Type of DR is Extract");
+		client.emit('objjobs',"sampel input JSON is",);
+		client.emit('objjobs',"Checking Field Level Security"+JSON.stringify(lis[0]['vlocity_cmt__SampleInputJSON__c'],null,2));
+		if(lis[0]["vlocity_cmt__CheckFieldLevelSecurity__c"]===true){
+			client.emit('objjobs',"Checkbox is Checked");
 			q2="select+vlocity_cmt__FilterOperator__c,vlocity_cmt__FilterValue__c,vlocity_cmt__FilterGroup__c,vlocity_cmt__InterfaceFieldAPIName__c,vlocity_cmt__InterfaceObjectName__c,vlocity_cmt__DomainObjectFieldAPIName__c+from+vlocity_cmt__DRMapItem__c+where+Name=+'"+name+"'";//get required values
-			client.emit('objjobs',"Type of DR is Extract");
+			
 			client.emit('objjobs',"Getting Required DR values by "+q2);
-			RestCallMapper(q2,'ExtractDRperformop',null,client);break;
+		RestCallMapper(q2,'ExtractDRperformop',null,client);}
+		else{
+			client.emit('objjobs',"<b>Error:</b> Field Level security is not checked");
+			client.emit('objjobserr',"Check the Field Level Security Checkbox");
+			client.emit('objjobs',"Checking of DR is Done");
+		}
+		break;
     default:
       client.emit('objjobs',"Type of DR is"+lis[0]['vlocity_cmt__Type__c'] );
       client.emit('objjobs',"Checking of DR is Done");
@@ -281,7 +292,7 @@ client.emit('objjobs','Checking DR is Done');
 	}
 }
 var DRExists=(name,client)=>{
-	q1="select+Id,vlocity_cmt__Type__c+from+vlocity_cmt__DRBundle__c+where+Name+=+'"+name.replace(/\s/g,'+')+"'";//Check DR is created
+	q1="select+Id,vlocity_cmt__Type__c,vlocity_cmt__CheckFieldLevelSecurity__c,vlocity_cmt__SampleInputJSON__c+from+vlocity_cmt__DRBundle__c+where+Name+=+'"+name.replace(/\s/g,'+')+"'";//Check DR is created
 	client.emit('objjobs'," <h4><u>Level 1 : Object Existence</u></h4> ");
 	client.emit('objjobs',"Checking DR Exists ");
 	RestCallMapper(q1,'DR Exists',name,client);

@@ -206,7 +206,7 @@ var drtype=(lis,name,client)=>{
 		case "Extract (JSON)":
 		client.emit('objjobs',"Type of DR is Extract");
 		client.emit('objjobs',"Checking Sample Input JSON");
-		if(lis[0]['vlocity_cmt__SampleInputJSON__c']=="{}"){
+		if(isEmpty(JSON.parse(lis[0]['vlocity_cmt__SampleInputJSON__c']))){
 			client.emit('objjobs',"<h5><b>Error: Sample Input JSON is NULL</b> </h5>");
 			client.emit('objjobserr',"Execute DR preview for a valid value");
 			client.emit('objjobs',"Checking of DR is Done");
@@ -222,7 +222,7 @@ var drtype=(lis,name,client)=>{
 			client.emit('objjobs',"Getting Required DR values by "+q2);
 		RestCallMapper(q2,'ExtractDRperformop',null,client);}
 		else{
-			client.emit('objjobs',"<b>Error:</b> Field Level security is not checked");
+			client.emit('objjobs',"<b>Error:Field Level security is not checked</b> ");
 			client.emit('objjobserr',"Check the Field Level Security Checkbox");
 			client.emit('objjobs',"Checking of DR is Done");
 		}

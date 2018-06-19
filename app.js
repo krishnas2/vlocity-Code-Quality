@@ -35,7 +35,13 @@ for (i in req.body){
     res.send('/index');
 	res.end();
 });
-
+var isEmpty = (obj)=> {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
 var objectexists=(bundle,name,client)=>{
 	que="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'";
 	client.emit('objjobs','<h4><u>Level 1: Object Existence</u></h4>');
@@ -199,8 +205,16 @@ var drtype=(lis,name,client)=>{
 		case "Extract":
 		case "Extract (JSON)":
 		client.emit('objjobs',"Type of DR is Extract");
-		client.emit('objjobs',"sampel input JSON is",);
-		client.emit('objjobs',"Checking Field Level Security"+JSON.stringify(lis[0]['vlocity_cmt__SampleInputJSON__c'],null,2));
+		client.emit('objjobs',"Checking Sampel Input JSON");
+		if(isEmpty(lis[0]['vlocity_cmt__SampleInputJSON__c'])){
+			client.emit('objjobs',"<h5><b>Error: Sample Input JSON is NULL</b> </h5>");
+			client.emit('objjobserr',"Execute DR preview for a valid value");
+			client.emit('objjobs',"Checking of DR is Done");
+		}
+		else{
+			client.emit('objjobs'," Sample Input JSON is not NULL");
+		}
+		client.emit('objjobs',"Checking Field Level Security");
 		if(lis[0]["vlocity_cmt__CheckFieldLevelSecurity__c"]===true){
 			client.emit('objjobs',"Checkbox is Checked");
 			q2="select+vlocity_cmt__FilterOperator__c,vlocity_cmt__FilterValue__c,vlocity_cmt__FilterGroup__c,vlocity_cmt__InterfaceFieldAPIName__c,vlocity_cmt__InterfaceObjectName__c,vlocity_cmt__DomainObjectFieldAPIName__c+from+vlocity_cmt__DRMapItem__c+where+Name=+'"+name+"'";//get required values
@@ -208,7 +222,7 @@ var drtype=(lis,name,client)=>{
 			client.emit('objjobs',"Getting Required DR values by "+q2);
 		RestCallMapper(q2,'ExtractDRperformop',null,client);}
 		else{
-			client.emit('objjobs',"<b>Error:</b> Field Level security is not checked");
+			client.emit('objjobs',"<h5><b>Error:</b> </h5>Field Level security is not checked");
 			client.emit('objjobserr',"Check the Field Level Security Checkbox");
 			client.emit('objjobs',"Checking of DR is Done");
 		}

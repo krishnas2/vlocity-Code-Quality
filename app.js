@@ -82,6 +82,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			
 			 if(resp.done && resp.totalSize>0){
 				 switch(msg){
+					 case "LoadDRperformop":client.emit('objjobs','Starting operations for Load DR');LoadDRperformop(resp.records,client);break;
 					 case "genericactive":client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');client.emit('objjobs','Checkign Object is Done');break;
 					 case "genericexists":client.emit('objjobs','Object Exits');break;
              case "CheckOmniscriptsExists":client.emit('objjobs',"Omniscript Exits");OmniScriptcheckactiveversion(opt,client);break;
@@ -94,11 +95,14 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			 }
 			 else if (resp.done && resp.totalSize==0){
 				 switch(msg){
+					 case "LoadDRperformop":
+					 case "ExtractDRperformop":
+					 client.emit('objjobs','DR query may be correct but to perform any operation no records returned for the query');client.emit('objjobserr','DR query may be correct but to perform any operation no records returned . Please Fill some fields and excute the task again');client.emit('objjobs','Checking DR is Done');break;
 					 case "genericactive":client.emit('objjobserr','Active version Doesnt Exists');client.emit('objjobs','Active version Doesnt Exists');client.emit('objjobs','Checking Object is Done');break;
 					 case "genericexists":client.emit('objjobserr',"Object Doesn't Exits,Give Correct Name and try again");client.emit('objjobs',"Object Doesn't Exits,Give Correct Name and try again");client.emit('objjobserr',"Checkign of Object is Done");break;
            case "CheckOmniscriptsExists":client.emit('objjobserr',"Omniscript Doesn't Exits, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DR Exists": client.emit('objjobs',"DR query may be correct but there were no records for the query");client.emit('objjobserr',"DR query may be correct but there were no records for the query");client.emit('objjobs','Checking DR is Done');break;
-				case "ExtractDRperformop":client.emit('objjobs','DR query may be correct but to perform any operation no records for the query');break;
+				
 				case "OmniscriptsExists":client.emit('objjobs',"Omniscript query may be correct but there were no records for the query"+JSON.stringify(resp,null,2));client.emit('objjobserr',"Omniscript query may be correct but there were no records for the query,kindly activate the Omniscript and try again"+JSON.stringify(resp,null,2));client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DRqueries":client.emit('objjobs','DR query may be correct but there were no records for the query,this could be due to field level security as well'+JSON.stringify(resp,null,2));break;
 				case "OmniScriptperformop":client.emit('objjobs','Omniscript query may be correct but there were no records for the query to perform any opration');break;
@@ -201,15 +205,27 @@ var getOmniScriptDetails=(resp,client)=>{
 var drtype=(lis,name,client)=>{
 	try{
 	client.emit('objjobs',"<h4><u>Level 2 : Getting Object Details</u></h4> ");
+	client.emit('objjobs',"Type of DR is"+lis[0]['vlocity_cmt__Type__c'] );
+	client.emit('objjobs',"<h4><u>Level 3 : Basic Checks</u></h4> ");
+	client.emit('objjobs',"Checking Naming Convention");
+	if(name.match("^([A-Z]+[a-z_0-9]*)+$")){
+		client.emit('objjobs',"Naming Convention is Followed");
+	}
+	else{
+		client.emit('objjobs',"<b>Warning: Naming Convention is Not Followed</b>");
+		client.emit('objjobs',"Naming Convention is Not Followed");
+		client.emit('objjobswar',"Naming Should follow pattern ^([A-Z]+[a-z_0-9]*)+$");
+	}
+	var val=false;
 	switch(lis[0]['vlocity_cmt__Type__c']){
 		case "Extract":
 		case "Extract (JSON)":
-		client.emit('objjobs',"Type of DR is Extract");
+		//client.emit('objjobs',"Type of DR is Extract");	
 		client.emit('objjobs',"Checking Sample Input JSON");
 		if(isEmpty(JSON.parse(lis[0]['vlocity_cmt__SampleInputJSON__c']))){
 			client.emit('objjobs',"<h5><b>Error: Sample Input JSON is NULL</b> </h5>");
 			client.emit('objjobserr',"Execute DR preview for a valid value");
-			client.emit('objjobs',"Checking of DR is Done");
+			val=true;
 		}
 		else{
 			client.emit('objjobs'," Sample Input JSON is not NULL");
@@ -217,20 +233,40 @@ var drtype=(lis,name,client)=>{
 		client.emit('objjobs',"Checking Field Level Security");
 		if(lis[0]["vlocity_cmt__CheckFieldLevelSecurity__c"]===true){
 			client.emit('objjobs',"Checkbox is Checked");
-			q2="select+vlocity_cmt__FilterOperator__c,vlocity_cmt__FilterValue__c,vlocity_cmt__FilterGroup__c,vlocity_cmt__InterfaceFieldAPIName__c,vlocity_cmt__InterfaceObjectName__c,vlocity_cmt__DomainObjectFieldAPIName__c+from+vlocity_cmt__DRMapItem__c+where+Name=+'"+name+"'";//get required values
+			q2="select+vlocity_cmt__FilterOperator__c,vlocity_cmt__FilterValue__c,vlocity_cmt__FilterGroup__c,vlocity_cmt__InterfaceFieldAPIName__c,vlocity_cmt__InterfaceObjectName__c,vlocity_cmt__DomainObjectFieldAPIName__c+from+vlocity_cmt__DRMapItem__c+where+Name=+'"+name.replace(/\s/g,'+')+"'";//get required values
 			
 			client.emit('objjobs',"Getting Required DR values by "+q2);
 		RestCallMapper(q2,'ExtractDRperformop',null,client);}
 		else{
 			client.emit('objjobs',"<b>Error:Field Level security is not checked</b> ");
 			client.emit('objjobserr',"Check the Field Level Security Checkbox");
-			client.emit('objjobs',"Checking of DR is Done");
+			val=true;
 		}
 		break;
+	case "Load":
+	if(lis[0]["vlocity_cmt__OutputType__c"]==="SObject"){
+		client.emit('objjobs',"Checking Assignement Rules");
+		if(lis[0]["vlocity_cmt__UseAssignmentRules__c"]===true ){
+			client.emit('objjobs',"Assignment Rules is checked");
+		}
+		else{
+			client.emit('objjobs',"<b>Warning: Assignment Rules is not checked</b>");
+			client.emit('objjobswar',"Assignment Rules Checkbox is not checked");
+		}
+	}
+	client.emit('objjobs',"Checking Upsert key");
+	q2="select+vlocity_cmt__DomainObjectFieldAPIName__c,vlocity_cmt__DomainObjectAPIName__c,vlocity_cmt__UpsertKey__c+from+vlocity_cmt__DRMapItem__c+where+Name=+'"+name.replace(/\s/g,'+')+"'";
+	//,vlocity_cmt__FilterOperator__c,vlocity_cmt__FilterValue__c,vlocity_cmt__FilterGroup__c,vlocity_cmt__InterfaceFieldAPIName__c,vlocity_cmt__InterfaceObjectName__c,vlocity_cmt__DomainObjectCreationOrder__c,vlocity_cmt__DomainObjectFieldType__c,
+	client.emit('objjobs','Getting required Values for execution'+q2);
+	RestCallMapper(q2,'LoadDRperformop',null,client);	
+				break;
     default:
-      client.emit('objjobs',"Type of DR is"+lis[0]['vlocity_cmt__Type__c'] );
+      
       client.emit('objjobs',"Checking of DR is Done");
 			
+	}
+	if(val==true){
+		client.emit('objjobs',"Checking of DR is Done");
 	}
 	}
 	catch(e){
@@ -238,13 +274,44 @@ var drtype=(lis,name,client)=>{
 		client.emit('objjobserr',"Error Occured "+e);
 	}
 }
+var LoadDRperformop=(lis,client)=>{
+	client.emit('objjobs',"<h4><u>Level 4 : Executing Code Quality Check</u></h4> ");
+	client.emit('objjobs',"Checking Upsert is Checked ");
+	var samples={},
+	temp='',
+	upsert=false;
+	for (var i=0;i<lis.length;i++){
+		temp='';
+		if(lis[i]["vlocity_cmt__UpsertKey__c"]===true){upsert=true;}
+		//client.emit('objjobs',samples.hasOwnProperty(lis[i]["vlocity_cmt__DomainObjectAPIName__c"])+lis[i]["vlocity_cmt__DomainObjectAPIName__c"]+JSON.stringify(samples,null,2));
+		if(samples.hasOwnProperty(lis[i]["vlocity_cmt__DomainObjectAPIName__c"])){temp=samples[lis[i]["vlocity_cmt__DomainObjectAPIName__c"]]+',';}
+		samples[lis[i]["vlocity_cmt__DomainObjectAPIName__c"]]=temp+lis[i]["vlocity_cmt__DomainObjectFieldAPIName__c"];
+	}
+	if(upsert===true){
+		client.emit('objjobs',"Upsert is Checked ");
+	}
+	else{
+		client.emit('objjobs',"<b>Warning: Upsert is not Checked </b>");
+		client.emit('objjobswar',"Upsert is not Checked ");
+	}
+	console.log(samples);
+	 for (i in samples){
+		if(samples[i] && i){
+		var tempquery='select+'+samples[i]+'+from+'+i+'+LIMIT+1';
+		console.log('tempquery',tempquery);
+		client.emit('objjobs',"Checking whether Fields "+samples[i]+" are present in "+i);
+		RestCallMapper(tempquery,'DRqueries',null,client);
+		}
+	 }
+	client.emit('objjobs','Checking DR is Done');	
+}
 var ExtractDRperformop=(lis,client)=>{
 	try{
 	var sample={},
 	holder={},
 	temp=[],
 	a='',b='';
-	client.emit('objjobs',"<h4><u>Level 3 : Executing Code Quality Check</u></h4> ");
+	client.emit('objjobs',"<h4><u>Level 4 : Executing Code Quality Check</u></h4> ");
 	for (var i=0;i<lis.length;i++){
 				if(lis[i]['vlocity_cmt__FilterOperator__c'] !=null){
 					a=lis[i]["vlocity_cmt__InterfaceObjectName__c"];
@@ -306,7 +373,7 @@ client.emit('objjobs','Checking DR is Done');
 	}
 }
 var DRExists=(name,client)=>{
-	q1="select+Id,vlocity_cmt__Type__c,vlocity_cmt__CheckFieldLevelSecurity__c,vlocity_cmt__SampleInputJSON__c+from+vlocity_cmt__DRBundle__c+where+Name+=+'"+name.replace(/\s/g,'+')+"'";//Check DR is created
+	q1="select+Id,vlocity_cmt__Type__c,vlocity_cmt__OutputType__c,vlocity_cmt__UseAssignmentRules__c,vlocity_cmt__CheckFieldLevelSecurity__c,vlocity_cmt__SampleInputJSON__c+from+vlocity_cmt__DRBundle__c+where+Name+=+'"+name.replace(/\s/g,'+')+"'";//Check DR is created
 	client.emit('objjobs'," <h4><u>Level 1 : Object Existence</u></h4> ");
 	client.emit('objjobs',"Checking DR Exists ");
 	RestCallMapper(q1,'DR Exists',name,client);

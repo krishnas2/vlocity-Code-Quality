@@ -37,6 +37,13 @@ position: absolute;
   font-weight:bold;
   padding-top: 4px
 }
+
+.filedwnd a,
+.filedwnd a:hover,
+.filedwnd a:focus {
+    color: #fff;
+	text-decoration:none;
+}
 </style>
     </head>
     <body ng-controller="utController" data-spy="scroll" data-target=".navbar"  data-offset="50">
@@ -74,6 +81,7 @@ position: absolute;
 <br/>
 		<p> Real Time overview of execution status is provided through checkbox for viewing logs. After after Successful step, a tick mark is appended at navigation bar.</p>
 		<p>The object Details capturing can further be enhanced for multiple objects at one-time.</p>
+		
 		</div>
 		<div class="form-check container">
     <input type="checkbox" class="filled-in form-check-input" id="checkbox104"  ng-model="showprocess" >
@@ -236,10 +244,15 @@ position: absolute;
     <input type="checkbox" class="filled-in form-check-input" id="checkbox102"  ng-model="showobjectconlog">
     <label class="form-check-label" for="checkbox102">Show Logs</label>
 </div>
+
+
 <div  ng-show="showobjectconlog">
 
 				 <pre style="height: 15pc; overflow-y: scroll;" id="objjobscons"></pre>
+    <div class="btn btn-danger filedwnd" ng-click="filedownloadcheck()"><a   ng-href="{{ fileUrl }}" download="file.txt">Download Log File</a></div>
+
 		</div>
+
 	<div class="form-check">
     <input type="checkbox" class="filled-in form-check-input" id="checkbox103"  ng-model="showobjectconlogerr">
     <label class="form-check-label" for="checkbox103">Error Logs</label>
@@ -343,8 +356,10 @@ position: absolute;
     }
   };
 }]);
-
-app.controller('utController', function($scope,$http, socket,$sce) {
+app.config(['$compileProvider', function ($compileProvider) {
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
+}]);
+app.controller('utController', function($scope,$http, socket,$window) {
 $scope.handshakesuccess=false;
 $scope.showsfdcconlog=true;
 $scope.showobjectconlog=true;
@@ -364,6 +379,14 @@ $scope.jirasuccess='';
 $scope.showjiraError=false;
 $scope.showjiraSuccess=false;
 $scope.names=['DataRaptor','OmniScript','ObjectLayout','VlocityUITemplate','VlocityCard','VlocityAction','VlocityUILayout'];
+//file upload start
+$scope.filedownloadcheck=function(){
+var data = document.getElementById('objjobscons').innerHTML,
+        blob = new Blob([data], { type: 'text/plain' }),
+        url = $window.URL || $window.webkitURL;
+    $scope.fileUrl = url.createObjectURL(blob);
+}
+	//file upload end
   $scope.join = function() {
     socket.emit('joined', $scope.chat_input);
   };
@@ -420,6 +443,10 @@ socket.on('connect', function(data) {
   socket.on('objjobserr', function(data) {
   console.log('dsdsdsderr',data);
   $scope.objjobsconerr+='\n'+data;
+  $scope.$apply();
+  });
+  socket.on('objjobswar', function(data) {
+  //console.log();
   $scope.$apply();
   });
    socket.on('jiraserr', function(data) {

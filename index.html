@@ -261,6 +261,14 @@ position: absolute;
 
 				 <pre style="height: 8pc; overflow-y: scroll;">{{ objjobsconerr }}</pre>
 		</div>
+<div class="form-check">
+    <input type="checkbox" class="filled-in form-check-input" id="checkbox104"  ng-model="showobjectconlogwar">
+    <label class="form-check-label" for="checkbox104">Warning Logs</label>
+</div>
+<div  ng-show="showobjectconlogwar">
+
+				 <pre style="height: 8pc; overflow-y: scroll;">{{ objjobsconwar }}</pre>
+		</div>
 <div class="col-xs-17" ng-show="onxtstep">
         <div class="text-right">
             <a href="#JIRA"><button type="button" class="btn btn-danger" ng-click="jiranextstep()"  >Next Step</button></a>
@@ -408,7 +416,7 @@ socket.on('connect', function(data) {
   socket.on('sfdccomslog', function(data) {
   console.log('dsdsdsd',data);
   if(data)
-    $scope.sfdccon+='\n'+data;
+    $scope.sfdccon+='\n'+'<br/>'+data;
 	//$state.reload();
 	document.getElementById('sfdccons').innerHTML=$scope.sfdccon;
 	$scope.$apply();
@@ -425,7 +433,7 @@ socket.on('connect', function(data) {
   });
   socket.on('objjobs', function(data) {
   console.log('dsdsdsd',data);
-  $scope.objjobscon+='\n'+data;
+  $scope.objjobscon+='\n'+'<br/>'+data;
   document.getElementById('objjobscons').innerHTML=$scope.objjobscon;
   if(data.match(/Done/g)){
   console.log('scsa',$scope.objjobsconerr)
@@ -442,11 +450,12 @@ socket.on('connect', function(data) {
   });
   socket.on('objjobserr', function(data) {
   console.log('dsdsdsderr',data);
-  $scope.objjobsconerr+='\n'+data;
+  $scope.objjobsconerr+='\n'+'<br/>'+data;
   $scope.$apply();
   });
   socket.on('objjobswar', function(data) {
   //console.log();
+  $scope.objjobsconwar+='\n'+'<br/>'+data;
   $scope.$apply();
   });
    socket.on('jiraserr', function(data) {

@@ -68,7 +68,7 @@ var objectexists=(bundle,name,client)=>{
 		temp='l';break;
 	}
 	que2="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__Active__c=true";
-						RestCallMapper(que2,'genericactive'+temp,name,client);break;
+						RestCallMapper(que2,'genericactive'+temp,name,client);
 }
 var genericperform=(msg,name,client)=>{
 	client.emit('objjobs','<h4><u>Level 2: Checking Naming Convention and Getting Required Values</u></h4>');

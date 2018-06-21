@@ -71,10 +71,10 @@ var objectexists=(bundle,name,client)=>{
 						RestCallMapper(que2,'genericactive'+temp,name,client);
 }
 var genericperform=(msg,name,client)=>{
-	client.emit('objjobs','<h4><u>Level 2: Checking Naming Convention and Getting Required Values</u></h4>');
+	client.emit('objjobs','<h4><u>Level 3: Checking Naming Convention and Getting Required Values</u></h4>');
 	namingconventioncheck(name,client);
 	switch(msg){
-		case 'genericactivet':que3="select+vlocity_cmt__HTML__c,vlocity_cmt__CustomJavascript__c,vlocity_cmt__CSS__c+from+vlocity_cmt__VlocityUITemplate__c+where+name+='"+name.replace(/\s/g,'+')+"'";
+		case 'genericactivet':que3="select+vlocity_cmt__HTML__c,vlocity_cmt__CustomJavascript__c,vlocity_cmt__Sass__c,vlocity_cmt__CSS__c+from+vlocity_cmt__VlocityUITemplate__c+where+name+='"+name.replace(/\s/g,'+')+"'";
 		RestCallMapper(que3,'templatevals',name,client);
 			break;
 		default: client.emit('objjobs','Checking of the Object is Done');

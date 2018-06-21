@@ -35,6 +35,17 @@ for (i in req.body){
     res.send('/index');
 	res.end();
 });
+var namingconventioncheck=name=>{
+	client.emit('objjobs',"Checking Naming Convention");
+	if(name.match("^([A-Z]+[a-z_0-9]*)+$")){
+		client.emit('objjobs',"Naming Convention is Followed");
+	}
+	else{
+		client.emit('objjobs',"<b>Warning: Naming Convention is Not Followed</b>");
+		client.emit('objjobs',"Naming Convention is Not Followed");
+		client.emit('objjobswar',"Naming Should follow pattern ^([A-Z]+[a-z_0-9]*)+$");
+	}
+}
 var isEmpty = (obj)=> {
     for(var key in obj) {
         if(obj.hasOwnProperty(key))
@@ -44,15 +55,30 @@ var isEmpty = (obj)=> {
 }
 var objectexists=(bundle,name,client)=>{
 	que="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'";
-	client.emit('objjobs','<h4><u>Level 1: Object Existence</u></h4>');
+	client.emit('objjobs','<h4><u>Level 1: Object Existence and Active Version</u></h4>');
 	client.emit('objjobs','Checking Whether'+bundle+' Object with name '+name+' exists');
 	RestCallMapper(que,'genericexists',name,client);
+	var temp='';
 	switch(bundle){
 		case "VlocityUITemplate":
+		temp='t';break;
 		case "VlocityCard":
+		temp='c';break;
 		case "VlocityUILayout":
-						que2="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__Active__c=true";
-						RestCallMapper(que2,'genericactive',name,client);break;
+		temp='l';break;
+	}
+	que2="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__Active__c=true";
+						RestCallMapper(que2,'genericactive'+temp,name,client);break;
+}
+var genericperform=(msg,name,client)=>{
+	client.emit('objjobs','<h4><u>Level 2: Checking Naming Convention and Getting Required Values</u></h4>');
+	namingconventioncheck(name);
+	switch(msg){
+		case 'genericactivet':que3="select+vlocity_cmt__HTML__c,vlocity_cmt__CustomJavascript__c,vlocity_cmt__CSS__c+from+vlocity_cmt__VlocityUITemplate__c+where+name+='"+name.replace(/\s/g,'+')+"'";
+		RestCallMapper(que3,'templatevals'+temp,name,client);
+			break;
+		default: client.emit('objjobs','Checking of the Object is Done');
+		
 	}
 }
 
@@ -83,7 +109,10 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			 if(resp.done && resp.totalSize>0){
 				 switch(msg){
 					 case "LoadDRperformop":client.emit('objjobs','Starting operations for Load DR');LoadDRperformop(resp.records,client);break;
-					 case "genericactive":client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');client.emit('objjobs','Checkign Object is Done');break;
+					 case "genericactivet":
+					 case "genericactivec":
+					 case "genericactivel":
+					 client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');genericperform(msg,name,client);break;
 					 case "genericexists":client.emit('objjobs','Object Exits');break;
              case "CheckOmniscriptsExists":client.emit('objjobs',"Omniscript Exits");OmniScriptcheckactiveversion(opt,client);break;
 				case "DR Exists": client.emit('objjobs','Data Raptor Exits');drtype(resp.records,opt,client);break;
@@ -98,7 +127,9 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "LoadDRperformop":
 					 case "ExtractDRperformop":
 					 client.emit('objjobs','DR query may be correct but to perform any operation no records returned for the query');client.emit('objjobserr','DR query may be correct but to perform any operation no records returned . Please Fill some fields and excute the task again');client.emit('objjobs','Checking DR is Done');break;
-					 case "genericactive":client.emit('objjobserr','Active version Doesnt Exists');client.emit('objjobs','Active version Doesnt Exists');client.emit('objjobs','Checking Object is Done');break;
+					 case "genericactivet":
+					 case "genericactivec":
+					 case "genericactivel":client.emit('objjobserr','Active version Doesnt Exists');client.emit('objjobs','<b>Error: Active version Doesnt Exists</b>');client.emit('objjobs','Checking Object is Done');break;
 					 case "genericexists":client.emit('objjobserr',"Object Doesn't Exits,Give Correct Name and try again");client.emit('objjobs',"Object Doesn't Exits,Give Correct Name and try again");client.emit('objjobserr',"Checkign of Object is Done");break;
            case "CheckOmniscriptsExists":client.emit('objjobserr',"Omniscript Doesn't Exits, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DR Exists": client.emit('objjobs',"DR query may be correct but there were no records for the query");client.emit('objjobserr',"DR query may be correct but there were no records for the query");client.emit('objjobs','Checking DR is Done');break;
@@ -207,15 +238,7 @@ var drtype=(lis,name,client)=>{
 	client.emit('objjobs',"<h4><u>Level 2 : Getting Object Details</u></h4> ");
 	client.emit('objjobs',"Type of DR is"+lis[0]['vlocity_cmt__Type__c'] );
 	client.emit('objjobs',"<h4><u>Level 3 : Basic Checks</u></h4> ");
-	client.emit('objjobs',"Checking Naming Convention");
-	if(name.match("^([A-Z]+[a-z_0-9]*)+$")){
-		client.emit('objjobs',"Naming Convention is Followed");
-	}
-	else{
-		client.emit('objjobs',"<b>Warning: Naming Convention is Not Followed</b>");
-		client.emit('objjobs',"Naming Convention is Not Followed");
-		client.emit('objjobswar',"Naming Should follow pattern ^([A-Z]+[a-z_0-9]*)+$");
-	}
+	namingconventioncheck(name);
 	var val=false;
 	switch(lis[0]['vlocity_cmt__Type__c']){
 		case "Extract":

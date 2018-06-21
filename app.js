@@ -75,7 +75,7 @@ var genericperform=(msg,name,client)=>{
 	namingconventioncheck(name,client);
 	switch(msg){
 		case 'genericactivet':que3="select+vlocity_cmt__HTML__c,vlocity_cmt__CustomJavascript__c,vlocity_cmt__CSS__c+from+vlocity_cmt__VlocityUITemplate__c+where+name+='"+name.replace(/\s/g,'+')+"'";
-		RestCallMapper(que3,'templatevals'+temp,name,client);
+		RestCallMapper(que3,'templatevals',name,client);
 			break;
 		default: client.emit('objjobs','Checking of the Object is Done');
 		

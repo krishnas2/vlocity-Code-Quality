@@ -35,7 +35,7 @@ for (i in req.body){
     res.send('/index');
 	res.end();
 });
-var namingconventioncheck=name=>{
+var namingconventioncheck=(name,client)=>{
 	client.emit('objjobs',"Checking Naming Convention");
 	if(name.match("^([A-Z]+[a-z_0-9]*)+$")){
 		client.emit('objjobs',"Naming Convention is Followed");
@@ -72,7 +72,7 @@ var objectexists=(bundle,name,client)=>{
 }
 var genericperform=(msg,name,client)=>{
 	client.emit('objjobs','<h4><u>Level 2: Checking Naming Convention and Getting Required Values</u></h4>');
-	namingconventioncheck(name);
+	namingconventioncheck(name,client);
 	switch(msg){
 		case 'genericactivet':que3="select+vlocity_cmt__HTML__c,vlocity_cmt__CustomJavascript__c,vlocity_cmt__CSS__c+from+vlocity_cmt__VlocityUITemplate__c+where+name+='"+name.replace(/\s/g,'+')+"'";
 		RestCallMapper(que3,'templatevals'+temp,name,client);
@@ -238,7 +238,7 @@ var drtype=(lis,name,client)=>{
 	client.emit('objjobs',"<h4><u>Level 2 : Getting Object Details</u></h4> ");
 	client.emit('objjobs',"Type of DR is"+lis[0]['vlocity_cmt__Type__c'] );
 	client.emit('objjobs',"<h4><u>Level 3 : Basic Checks</u></h4> ");
-	namingconventioncheck(name);
+	namingconventioncheck(name,client);
 	var val=false;
 	switch(lis[0]['vlocity_cmt__Type__c']){
 		case "Extract":

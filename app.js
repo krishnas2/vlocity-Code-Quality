@@ -112,7 +112,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "genericactivet":
 					 case "genericactivec":
 					 case "genericactivel":
-					 client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');genericperform(msg,name,client);break;
+					 client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');genericperform(msg,opt,client);break;
 					 case "genericexists":client.emit('objjobs','Object Exits');break;
              case "CheckOmniscriptsExists":client.emit('objjobs',"Omniscript Exits");OmniScriptcheckactiveversion(opt,client);break;
 				case "DR Exists": client.emit('objjobs','Data Raptor Exits');drtype(resp.records,opt,client);break;

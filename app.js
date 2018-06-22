@@ -9,6 +9,7 @@ https=require('https'),
 request = require('request'),
 username='',
 access_token='',
+access_token='',
 instance_url='',
 squery='/services/data/v41.0/query/?q=';
 
@@ -113,12 +114,12 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "genericactivec":
 					 case "genericactivel":
 					 client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');genericperform(msg,opt,client);break;
-					 case "genericexists":client.emit('objjobs','Object Exits');break;
-             case "CheckOmniscriptsExists":client.emit('objjobs',"Omniscript Exits");OmniScriptcheckactiveversion(opt,client);break;
-				case "DR Exists": client.emit('objjobs','Data Raptor Exits');drtype(resp.records,opt,client);break;
+					 case "genericexists":client.emit('objjobs','Object Exists');break;
+             case "CheckOmniscriptsExists":client.emit('objjobs',"Omniscript Exists");OmniScriptcheckactiveversion(opt,client);break;
+				case "DR Exists": client.emit('objjobs','Data Raptor Exists');drtype(resp.records,opt,client);break;
 				case "ExtractDRperformop":client.emit('objjobs','Starting operations for Extract DR');ExtractDRperformop(resp.records,client);break;
 				case "DRqueries":client.emit('objjobs','DR query is success');break;
-				case "OmniscriptsExists":client.emit('objjobs','Omniscript Exits');getOmniScriptDetails(resp,client);break;
+				case "OmniscriptsExists":client.emit('objjobs','Omniscript Exists');getOmniScriptDetails(resp,client);break;
 				case "OmniScriptperformop":client.emit('objjobs','Starting operations for Omniscript');OmniScriptperformop(resp,client);break;
 			}
 			 }
@@ -130,8 +131,8 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "genericactivet":
 					 case "genericactivec":
 					 case "genericactivel":client.emit('objjobserr','Active version Doesnt Exists');client.emit('objjobs','<b>Error: Active version Doesnt Exists</b>');client.emit('objjobs','Checking Object is Done');break;
-					 case "genericexists":client.emit('objjobserr',"Object Doesn't Exits,Give Correct Name and try again");client.emit('objjobs',"Object Doesn't Exits,Give Correct Name and try again");client.emit('objjobserr',"Checkign of Object is Done");break;
-           case "CheckOmniscriptsExists":client.emit('objjobserr',"Omniscript Doesn't Exits, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
+					 case "genericexists":client.emit('objjobserr',"Object Doesn't Exists,Give Correct Name and try again");client.emit('objjobs',"Object Doesn't Exists,Give Correct Name and try again");client.emit('objjobserr',"Checkign of Object is Done");break;
+           case "CheckOmniscriptsExists":client.emit('objjobserr',"Omniscript Doesn't Exists, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DR Exists": client.emit('objjobs',"DR query may be correct but there were no records for the query");client.emit('objjobserr',"DR query may be correct but there were no records for the query");client.emit('objjobs','Checking DR is Done');break;
 				
 				case "OmniscriptsExists":client.emit('objjobs',"Omniscript query may be correct but there were no records for the query"+JSON.stringify(resp,null,2));client.emit('objjobserr',"Omniscript query may be correct but there were no records for the query,kindly activate the Omniscript and try again"+JSON.stringify(resp,null,2));client.emit('objjobs','Checking Omniscript is Done');break;
@@ -143,7 +144,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 				 switch(msg){
 				case "DR Exists": client.emit('objjobs',"Data Raptor Doesn't Exist");client.emit('objjobserr',"Data Raptor Doesn't Exist");client.emit('objjobs','Checking DR is Done');break;
 				case "ExtractDRperformop":client.emit('objjobs','Starting operations for Extract DR');client.emit('objjobserr','Starting operations for Extract DR');break;
-				case "OmniscriptsExists":client.emit('objjobs',"Omniscript Doesn't Exits"+JSON.stringify(resp,null,2));client.emit('objjobserr',"Omniscript Doesn't Exits");client.emit('objjobs','Checking Omniscript is Done');break;
+				case "OmniscriptsExists":client.emit('objjobs',"Omniscript Doesn't Exists"+JSON.stringify(resp,null,2));client.emit('objjobserr',"Omniscript Doesn't Exists");client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DRqueries":client.emit('objjobs','DR query failed'+JSON.stringify(resp,null,2)+',this could be due to field level security as wel');client.emit('objjobs','DR query is failed');break;
 				case "OmniScriptperformop":client.emit('objjobs','Starting operations for Omniscript');client.emit('objjobserr','Starting operations for Omniscript');break;
 			}

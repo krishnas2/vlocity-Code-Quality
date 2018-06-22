@@ -12,7 +12,7 @@
 <style>
 #process {padding-top:50px;height:700px;max-height:900px;color: #fff;white-space: nowrap; background-color: #000;}
 #Handshake {padding-top:50px;height:900px;max-height:900px;color: #fff;white-space: nowrap; background-color: #009688;}
-#Object {padding-top:50px;height:900px;max-height:900px;color: #fff;white-space: nowrap; background-color: #6762a6;}
+#Object {padding-top:50px;height:900px;max-height:1200px;color: #fff;white-space: nowrap; background-color: #6762a6;}
 #JIRA {padding-top:50px;height:900px;max-height:900px;color: #fff;white-space: nowrap; background-color: #000;}
 .btn-bs-file{
 position: relative;
@@ -450,12 +450,12 @@ socket.on('connect', function(data) {
   });
   socket.on('objjobserr', function(data) {
   console.log('dsdsdsderr',data);
-  $scope.objjobsconerr+='\n'+'<br/>'+data;
+  $scope.objjobsconerr+='\n'+data;
   $scope.$apply();
   });
   socket.on('objjobswar', function(data) {
   //console.log();
-  $scope.objjobsconwar+='\n'+'<br/>'+data;
+  $scope.objjobsconwar+='\n'+data;
   $scope.$apply();
   });
    socket.on('jiraserr', function(data) {

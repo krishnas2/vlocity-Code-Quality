@@ -42,7 +42,7 @@ var namingconventioncheck=(name,client)=>{
 	}
 	else{
 		client.emit('objjobs',"<b>Warning: Naming Convention is Not Followed</b>");
-		client.emit('objjobs',"Naming Convention is Not Followed");
+		
 		client.emit('objjobswar',"Naming Should follow pattern ^([A-Z]+[a-z_0-9]*)+$");
 	}
 }

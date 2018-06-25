@@ -209,13 +209,13 @@ var OmniScriptperformop=(resp,client)=>{
 	}
 	client.emit('objjobs',"<h4><u>Level 5 : Execution Status </u></h4> ");
 	if (i2===0){
-		client.emit('objjobs','Chekcing for Remote Action');
+		client.emit('objjobs','Chekcing for Response Action');
 		if(i1===0){
-			client.emit('objjobserr','There is no Remote Action Present');
-			client.emit('objjobs','<b>Error: There is no Remote Action Present</b>');
+			client.emit('objjobserr','There is no Response Action Present');
+			client.emit('objjobs','<b>Error: There is no Response Action Present</b>');
 		}
 		else{
-			client.emit('objjobserr','Remote Action Exists ');
+			client.emit('objjobserr','Response Action Exists ');
 		}
 	}
 	for (i in sample){

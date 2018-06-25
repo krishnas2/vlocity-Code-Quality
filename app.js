@@ -163,7 +163,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 function typesubtypequery  (name) {
 	var temp=name.lastIndexOf('_');
 	console.log(name.substring(0,temp),name.substring(temp+1,));
-	return "select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+where+vlocity_cmt__Type__c='"+name.substring(0,temp)"'+and+vlocity_cmt__SubType__c='"+name.substring(temp+1,)+"'";
+	return "select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+where+vlocity_cmt__Type__c='"+name.substring(0,temp)+"'+and+vlocity_cmt__SubType__c='"+name.substring(temp+1,)+"'";
 }
 var OmniScriptperformop=(resp,client)=>{
 	var sample={};

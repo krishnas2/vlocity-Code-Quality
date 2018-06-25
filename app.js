@@ -132,7 +132,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "genericactivec":
 					 case "genericactivel":client.emit('objjobserr','Active version Doesnt Exists');client.emit('objjobs','<b>Error: Active version Doesnt Exists</b>');client.emit('objjobs','Checking Object is Done');break;
 					 case "genericexists":client.emit('objjobserr',"Object Doesn't Exists,Give Correct Name and try again");client.emit('objjobs',"Object Doesn't Exists,Give Correct Name and try again");client.emit('objjobserr',"Checkign of Object is Done");break;
-           case "CheckOmniScriptExists":client.emit('objjobserr',"Omniscript"+opt+" Doesn't Exists, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
+           case "CheckOmniScriptExists":client.emit('objjobserr',"Omniscript "+opt+" Doesn't Exists, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DR Exists": client.emit('objjobs',"DR query may be correct but there were no records for the query");client.emit('objjobserr',"DR query may be correct but there were no records for the query");client.emit('objjobs','Checking DR is Done');break;
 				
 				case "OmniscriptsExists":client.emit('objjobs',"Omniscript query may be correct but there were no records for the query"+JSON.stringify(resp,null,2));client.emit('objjobserr',"Omniscript query may be correct but there were no records for the query,kindly activate the Omniscript and try again"+JSON.stringify(resp,null,2));client.emit('objjobs','Checking Omniscript is Done');break;
@@ -171,6 +171,7 @@ var OmniScriptperformop=(resp,client)=>{
 	client.emit('objjobs',"<h4><u>Level 4 : OmniScript Code Quality Operations </u></h4> ");
 	for (var i=0;i<resp.records.length;i++){
 		//console.log(resp.records[i].Name,true);
+		if(resp.records[i]["vlocity_cmt__Active__c"]){
 		sample[resp.records[i].Name]=true;
 		propset=JSON.parse(resp.records[i]["vlocity_cmt__PropertySet__c"]);
 		//client.emit('objjobs','Checking Node '+resp.records[i].Name);
@@ -206,6 +207,7 @@ var OmniScriptperformop=(resp,client)=>{
 										}
 										break;
 		}
+	}
 	}
 	client.emit('objjobs',"<h4><u>Level 5 : Execution Status </u></h4> ");
 	if (i2===0){

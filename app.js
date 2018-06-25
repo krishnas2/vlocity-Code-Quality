@@ -177,6 +177,7 @@ var OmniScriptperformop=(resp,client)=>{
 							getObjectDetails('OmniScript',resp.records[i].Name,client);break;
 			case "Integration Procedure Action":
 							client.emit('objjobs','Starting a new Thread for IP '+resp.records[i]["integrationProcedureKey"]+' referred at JSON Node '+resp.records[i].Name);
+							console.log(resp.records[i]["integrationProcedureKey"]);
 							getObjectDetails('OmniScript',resp.records[i]["integrationProcedureKey"],client);
 						break;
 			case "Remote Action":
@@ -234,7 +235,7 @@ var OmniScriptcheckactiveversion=(name,client)=>{
 }
 var OmniscriptsExists=(name,bundle,client)=>{
 	client.emit('objjobs',"<h4><u>Level 1 : Object Existence </u></h4> ");
-	console.log(name,client);
+	console.log(name);
   tq="select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+Where+Name='"+name.replace(/\s/g,'+')+"'";
   client.emit('objjobs','Checking if '+bundle+'is present');
   RestCallMapper(tq,'Check'+'OmniScript'+'Exists',name,client);

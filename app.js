@@ -160,6 +160,10 @@ var RestCallMapper=(query,msg,opt,client)=>{
 	qryObj.end();
 };
 
+var typesubtypequery = name =>{
+	var temp=name.lastIndexOf('_');
+	return "select+Id,Name+from+vlocity_cmt__OmniScript__c+where+vlocity_cmt__Type__c='"+name.substring(0,temp)"'+and+vlocity_cmt__SubType__c='"+name.substring(temp+1,)+"'";
+}
 var OmniScriptperformop=(resp,client)=>{
 	var sample={};
 	var i1=0,i2=0;
@@ -178,7 +182,7 @@ var OmniScriptperformop=(resp,client)=>{
 			case "Integration Procedure Action":
 							client.emit('objjobs','Starting a new Thread for IP '+propset.integrationProcedureKey+' referred at JSON Node '+resp.records[i].Name);
 							//console.log(resp.records[i],'check',propset);
-							getObjectDetails('OmniScript',propset.integrationProcedureKey,client);
+							getObjectDetails('IntegrationProcedure',propset.integrationProcedureKey,client);
 						break;
 			case "Remote Action":
 								
@@ -236,7 +240,7 @@ var OmniScriptcheckactiveversion=(name,client)=>{
 var OmniscriptsExists=(name,bundle,client)=>{
 	client.emit('objjobs',"<h4><u>Level 1 : Object Existence </u></h4> ");
 	console.log(name);
-  tq="select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+Where+Name='"+name.replace(/\s/g,'+')+"'";
+  tq=bundle=='IntegrationProcedure'?typesubtypequery(name):"select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+Where+Name='"+name.replace(/\s/g,'+')+"'";
   client.emit('objjobs','Checking if '+bundle+'is present');
   RestCallMapper(tq,'Check'+'OmniScript'+'Exists',name,client);
 	
@@ -438,7 +442,9 @@ var getObjectDetails=(bundle,name,client)=>{//Gettign Object Details
 	switch (bundle){
 	case "DataRaptor":DRExists(name,client);break;
 	case "OmniScript":
-	case "Integration_Prodecure":OmniscriptsExists(name,bundle,client);break;
+	case "Integration_Prodecure":
+	case "IntegrationProcedure":
+	OmniscriptsExists(name,bundle,client);break;
 	default:objectexists(bundle,name,client);
 	}
 }

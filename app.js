@@ -177,7 +177,7 @@ var OmniScriptperformop=(resp,client)=>{
 							getObjectDetails('OmniScript',resp.records[i].Name,client);break;
 			case "Integration Procedure Action":
 							client.emit('objjobs','Starting a new Thread for IP '+propset.integrationProcedureKey+' referred at JSON Node '+resp.records[i].Name);
-							console.log(resp.records[i],'check',propset);
+							//console.log(resp.records[i],'check',propset);
 							getObjectDetails('OmniScript',propset.integrationProcedureKey,client);
 						break;
 			case "Remote Action":

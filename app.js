@@ -115,7 +115,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "genericactivel":
 					 client.emit('objjobs','<h4><u>Level 2: Execution Status</u></h4>');client.emit('objjobs','Active version Exists');genericperform(msg,opt,client);break;
 					 case "genericexists":client.emit('objjobs','Object Exists');break;
-             case "CheckOmniscriptsExists":client.emit('objjobs',"Omniscript Exists");OmniScriptcheckactiveversion(opt,client);break;
+             case "CheckOmniScriptExists":client.emit('objjobs',"Omniscript Exists");OmniScriptcheckactiveversion(opt,client);break;
 				case "DR Exists": client.emit('objjobs','Data Raptor Exists');drtype(resp.records,opt,client);break;
 				case "ExtractDRperformop":client.emit('objjobs','Starting operations for Extract DR');ExtractDRperformop(resp.records,client);break;
 				case "DRqueries":client.emit('objjobs','DR query is success');break;
@@ -132,7 +132,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 					 case "genericactivec":
 					 case "genericactivel":client.emit('objjobserr','Active version Doesnt Exists');client.emit('objjobs','<b>Error: Active version Doesnt Exists</b>');client.emit('objjobs','Checking Object is Done');break;
 					 case "genericexists":client.emit('objjobserr',"Object Doesn't Exists,Give Correct Name and try again");client.emit('objjobs',"Object Doesn't Exists,Give Correct Name and try again");client.emit('objjobserr',"Checkign of Object is Done");break;
-           case "CheckOmniscriptsExists":client.emit('objjobserr',"Omniscript Doesn't Exists, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
+           case "CheckOmniScriptExists":client.emit('objjobserr',"Omniscript Doesn't Exists, Give correct name");client.emit('objjobs',"There is no active version of this omniscript");client.emit('objjobs','Checking Omniscript is Done');break;
 				case "DR Exists": client.emit('objjobs',"DR query may be correct but there were no records for the query");client.emit('objjobserr',"DR query may be correct but there were no records for the query");client.emit('objjobs','Checking DR is Done');break;
 				
 				case "OmniscriptsExists":client.emit('objjobs',"Omniscript query may be correct but there were no records for the query"+JSON.stringify(resp,null,2));client.emit('objjobserr',"Omniscript query may be correct but there were no records for the query,kindly activate the Omniscript and try again"+JSON.stringify(resp,null,2));client.emit('objjobs','Checking Omniscript is Done');break;
@@ -162,56 +162,81 @@ var RestCallMapper=(query,msg,opt,client)=>{
 
 var OmniScriptperformop=(resp,client)=>{
 	var sample={};
+	var i1=0,i2=0;
 	client.emit('objjobs',"<h4><u>Level 4 : OmniScript Code Quality Operations </u></h4> ");
 	for (var i=0;i<resp.records.length;i++){
 		//console.log(resp.records[i].Name,true);
 		sample[resp.records[i].Name]=true;
 		propset=JSON.parse(resp.records[i]["vlocity_cmt__PropertySet__c"]);
-		client.emit('objjobs','Checking Node '+resp.records[i].Name);
-		client.emit('objjobs','Type '+resp.records[i]["vlocity_cmt__Type__c"]);
+		//client.emit('objjobs','Checking Node '+resp.records[i].Name);
+		//client.emit('objjobs','Type '+resp.records[i]["vlocity_cmt__Type__c"]);
 		switch(resp.records[i]["vlocity_cmt__Type__c"]){
+			case "Response Action":i1+=1;break;
+			case "Step":i2+=1;break;
+			case "OmniScript": client.emit('objjobs','Starting a new Thread for Re-Usable Omniscript '+resp.records[i].Name);
+							getObjectDetails('OmniScript',resp.records[i].Name,client);break;
+			case "Integration Procedure Action":
+							client.emit('objjobs','Starting a new Thread for IP '+records[i]["integrationProcedureKey"]+' referred at JSON Node '+resp.records[i].Name);
+							getObjectDetails('OmniScript',records[i]["integrationProcedureKey"],client);
+						break;
 			case "Remote Action":
 								
-								if(propset.responseJSONNode && sample[propset.responseJSONNode]===undefined){
+								if(propset.responseJSONNode && sample[propset.responseJSONNode]===undefined && propset.responseJSONNode!="vlcCart"){//Check for persistent component should be made dynamic
 									//console.log(sample,sample[propset.responseJSONNode],resp.records[i].Name,propset.responseJSONNode,'sample');
+									client.emit('objjobs','Saving response JSON Node Name for Refrencing in Selectable Items');
 									sample[propset.responseJSONNode]=false;
 								}
 								if(propset.preTransformBundle|| propset.postTransformBundle){
+									client.emit('objjobs','Starting a New Thread for the DataRaptor '+propset.preTransformBundle!==""?propset.preTransformBundle:propset.postTransformBundle+' at JSON NOde '+resp.records[i].Name);
 									getObjectDetails("DataRaptor",propset.preTransformBundle!==""?propset.preTransformBundle:propset.postTransformBundle,client);
 								}
 								break;
 			case "DataRaptor Extract Action":
+			case "DataRaptor Post Action":
+			case "DataRaptor Transform Action":
 										if(propset.bundle){
+											client.emit('objjobs','Starting a New Thread for the DataRaptor');
 											getObjectDetails("DataRaptor",propset.bundle,client);
 										}
 										break;
 		}
 	}
 	client.emit('objjobs',"<h4><u>Level 5 : Execution Status </u></h4> ");
+	if (i2===0){
+		client.emit('objjobs','Chekcing for Remote Action');
+		if(i1===0){
+			client.emit('objjobserr','There is no Remote Action Present');
+			client.emit('objjobs','<b>Error: There is no Remote Action Present</b>');
+		}
+		else{
+			client.emit('objjobserr','Remote Action Exists ');
+		}
+	}
 	for (i in sample){
 		//console.log(sample[i],i);
 		if (sample.hasOwnProperty(i) && sample[i]===false){
-			client.emit('objjobs',i+'is not existing but used');
-		client.emit('objjobserr',i+'is not existing but used');
-			console.log(i,'is not existing but used');
+			client.emit('objjobs',i+' is not existing but used');
+		client.emit('objjobserr',i+' is not existing but used');
+			console.log(i,' is not existing but used');
 		}
-		else{
+		/* else{
 			client.emit('objjobs','Checked Node'+i);
-		}
+		} */
 	}
 	client.emit('objjobs','Checking Omniscript is Done');
 }
 var OmniScriptcheckactiveversion=(name,client)=>{
   q1="select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+Where+Name='"+name.replace(/\s/g,'+')+"'+and+vlocity_cmt__IsActive__c=true";
-  client.emit('objjobs',"<h4><u>Level 2 : Check For Active Version </u></h4> ");
+  client.emit('objjobs',"<h4><u>Level 2 : Check For Naming Convention and Active Version </u></h4> ");
+  namingconventioncheck(name,client);
 	client.emit('objjobs','Checking for active version of the object');
 	RestCallMapper(q1,'OmniscriptsExists',name,client);
 }
-var OmniscriptsExists=(name,client)=>{
+var OmniscriptsExists=(name,bundle,client)=>{
 	client.emit('objjobs',"<h4><u>Level 1 : Object Existence </u></h4> ");
   tq="select+Id,vlocity_cmt__PropertySet__c+from+vlocity_cmt__OmniScript__c+Where+Name='"+name.replace(/\s/g,'+')+"'";
-  client.emit('objjobs','Checking if Omniscript is present');
-  RestCallMapper(tq,'CheckOmniscriptsExists',name,client);
+  client.emit('objjobs','Checking if '+bundle+'is present');
+  RestCallMapper(tq,'Check'+'OmniScript'+'Exists',name,client);
 	
 }
 var getOmniScriptDetails=(resp,client)=>{
@@ -405,11 +430,13 @@ var DRExists=(name,client)=>{
 
 var getObjectDetails=(bundle,name,client)=>{//Gettign Object Details
 	//console.log(bundle,name);
+	client.emit('objjobs',"Starting a new Operation ");
 	client.emit('objjobs',"Type of Object is "+bundle);
 	client.emit('objjobs',"Object's Name is "+name);
 	switch (bundle){
 	case "DataRaptor":DRExists(name,client);break;
-	case "OmniScript":OmniscriptsExists(name,client);break;
+	case "OmniScript":
+	case "Integration_Prodecure":OmniscriptsExists(name,bundle,client);break;
 	default:objectexists(bundle,name,client);
 	}
 }

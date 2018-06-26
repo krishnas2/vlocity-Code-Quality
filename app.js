@@ -84,7 +84,7 @@ var actionsvals=(rec,name,client)=>{
 	for (i in rec){
 		if(rec.hasOwnProperty(i)){
 			client.emit('objjobs','Checking '+i);
-			if(rec[i]!=null||rec[i]!='')
+			if(rec[i]!==null && rec[i]!='')
 				client.emit('objjobs',i+' is fine ');
 			else{
 				client.emit('objjobs','<b>Error: '+i+' is null');

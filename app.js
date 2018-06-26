@@ -80,7 +80,7 @@ var objectexists=(bundle,name,client)=>{
 	RestCallMapper(que2,'genericactive'+temp,name,client);
 }
 var actionperform=(name,client)=>{
-	que3="select+Id,vlocity_cmt__OpenURLMode__c,vlocity_cmt__LinkType__c,vlocity_cmt__URL__c,vlocity_cmt__UrlParameters__c,vlocity_cmt__DisplayOn__c+from+vlocity_cmt__"+"VlocityAction"+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__Active__c=true";
+	que3="select+Id,vlocity_cmt__OpenURLMode__c,vlocity_cmt__LinkType__c,vlocity_cmt__URL__c,vlocity_cmt__UrlParameters__c,vlocity_cmt__DisplayOn__c+from+vlocity_cmt__"+"VlocityAction"+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__IsActive__c=true";
 	RestCallMapper(que3,'actionsvals',name,client);
 }
 var genericperform=(msg,name,client)=>{

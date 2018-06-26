@@ -80,6 +80,7 @@ var objectexists=(bundle,name,client)=>{
 	RestCallMapper(que2,'genericactive'+temp,name,client);
 }
 var actionsvals=(rec,name,client)=>{
+	try{
 	for (i in rec){
 		if(rec.hasOwnProperty(i)){
 			client.emit('objjobs','Checking '+i);
@@ -91,6 +92,14 @@ var actionsvals=(rec,name,client)=>{
 			}
 		}
 	}
+	}
+	catch(e){
+		client.emit('objjobserr','Error in Object '+name);
+		client.emit('objjobserr','Error in Object '+name+' is '+e);
+	}
+	finally{
+	client.emit('objjobs','Checking of Object '+name+' is Done');
+	}
 }
 var actionperform=(name,client)=>{
 	try{
@@ -100,6 +109,7 @@ var actionperform=(name,client)=>{
 	catch(e){
 		client.emit('objjobs','There is some issue with while performing opration');
 		client.emit('objjobserr','The issue for '+name+' is '+e);
+		client.emit('objjobs','Checking of Object '+name+' is Done');
 	}
 }
 var genericperform=(msg,name,client)=>{
@@ -158,7 +168,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			 }
 			 else if (resp.done && resp.totalSize==0){
 				 switch(msg){
-					 case "actionsvals":client.emit('objjobs','There is an issue with Vlocity Action ');client.emit('objjobserr','There is an issue with Vlocity Action '+opt);break;
+					 case "actionsvals":client.emit('objjobs','There is an issue with Vlocity Action ');client.emit('objjobserr','There is an issue with Vlocity Action '+opt);client.emit('objjobs','Checking of Object '+name+' is Done');break;
 					 case "LoadDRperformop":
 					 case "ExtractDRperformop":
 					 client.emit('objjobs','DR query may be correct but to perform any operation no records returned for the query');client.emit('objjobserr','DR query may be correct but to perform any operation no records returned . Please Fill some fields and excute the task again');client.emit('objjobs','Checking DR is Done');break;

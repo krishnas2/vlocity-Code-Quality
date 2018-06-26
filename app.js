@@ -61,7 +61,7 @@ var objectexists=(bundle,name,client)=>{
 	RestCallMapper(que,'genericexists',name,client);
 	var temp='';
 	if (bundle === "VlocityAction"){
-		que2="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'+and+	vlocity_cmt__IsActive__c=true";
+		que2="select+Id+from+vlocity_cmt__"+bundle+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'+and+vlocity_cmt__IsActive__c=true";
 		temp='action';
 	}
 	else{

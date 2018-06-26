@@ -87,7 +87,7 @@ var actionsvals=(rec,name,client)=>{
 			if(rec[i]!==null && rec[i]!='')
 				client.emit('objjobs',i+' is fine ');
 			else{
-				client.emit('objjobs','<b>Error: '+i+' is null');
+				client.emit('objjobs','<b>Error: '+i+' is null</b>');
 				client.emit('objjobserr',i+' of the Object '+name+' is NULL');
 			}
 		}

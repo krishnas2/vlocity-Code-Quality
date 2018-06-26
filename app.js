@@ -79,9 +79,28 @@ var objectexists=(bundle,name,client)=>{
 	}
 	RestCallMapper(que2,'genericactive'+temp,name,client);
 }
+var actionsvals=(rec,name,client)=>{
+	for (i in rec){
+		if(rec.hasOwnProperty(i)){
+			client.emit('objjobs','Checking '+i);
+			if(rec[i]!=null||rec[i]!='')
+				client.emit('objjobs',i+' is fine ');
+			else{
+				client.emit('objjobs','<b>Error: '+i+' is null');
+				client.emit('objjobserr',i+' of the Object '+name+' is NULL');
+			}
+		}
+	}
+}
 var actionperform=(name,client)=>{
-	que3="select+Id,vlocity_cmt__OpenURLMode__c,vlocity_cmt__LinkType__c,vlocity_cmt__URL__c,vlocity_cmt__UrlParameters__c,vlocity_cmt__DisplayOn__c+from+vlocity_cmt__"+"VlocityAction"+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__IsActive__c=true";
-	RestCallMapper(que3,'actionsvals',name,client);
+	try{
+	que3="select+vlocity_cmt__OpenURLMode__c,vlocity_cmt__LinkType__c,vlocity_cmt__URL__c,vlocity_cmt__UrlParameters__c,vlocity_cmt__DisplayOn__c+from+vlocity_cmt__"+"VlocityAction"+"__c+where+Name=+'"+name.replace(/\s/g,'+')+"'and+vlocity_cmt__IsActive__c=true";
+	client.emit('objjobs','<h4><u>Level 3: Getting Required Values</u></h4>');
+	RestCallMapper(que3,'actionsvals',name,client);}
+	catch(e){
+		client.emit('objjobs','There is some issue with while performing opration');
+		client.emit('objjobserr','The issue for '+name+' is '+e);
+	}
 }
 var genericperform=(msg,name,client)=>{
 	client.emit('objjobs','<h4><u>Level 3: Checking Naming Convention and Getting Required Values</u></h4>');
@@ -121,6 +140,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			
 			 if(resp.done && resp.totalSize>0){
 				 switch(msg){
+					 case "actionsvals":client.emit('objjobs','Starting operations for Vlocity Action Object');actionsvals(resp.records[0],name,client);break;
 					 case "LoadDRperformop":client.emit('objjobs','Starting operations for Load DR');LoadDRperformop(resp.records,client);break;
 					 case "genericactivet":
 					 case "genericactivec":
@@ -138,6 +158,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			 }
 			 else if (resp.done && resp.totalSize==0){
 				 switch(msg){
+					 case "actionsvals":client.emit('objjobs','There is an issue with Vlocity Action ');client.emit('objjobserr','There is an issue with Vlocity Action '+opt);break;
 					 case "LoadDRperformop":
 					 case "ExtractDRperformop":
 					 client.emit('objjobs','DR query may be correct but to perform any operation no records returned for the query');client.emit('objjobserr','DR query may be correct but to perform any operation no records returned . Please Fill some fields and excute the task again');client.emit('objjobs','Checking DR is Done');break;

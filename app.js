@@ -150,7 +150,7 @@ var RestCallMapper=(query,msg,opt,client)=>{
 			
 			 if(resp.done && resp.totalSize>0){
 				 switch(msg){
-					 case "actionsvals":client.emit('objjobs','Starting operations for Vlocity Action Object');actionsvals(resp.records[0],name,client);break;
+					 case "actionsvals":client.emit('objjobs','Starting operations for Vlocity Action Object');actionsvals(resp.records[0],opt,client);break;
 					 case "LoadDRperformop":client.emit('objjobs','Starting operations for Load DR');LoadDRperformop(resp.records,client);break;
 					 case "genericactivet":
 					 case "genericactivec":

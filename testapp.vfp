@@ -1,0 +1,65 @@
+
+    <apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>Admin Setting for Opp App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Import the Design System style sheet -->
+  <apex:slds />
+</head>
+<body>
+  <!-- REQUIRED SLDS WRAPPER -->
+  <div class="slds-scope">
+    <!-- MASTHEAD -->
+    <p class="slds-text-heading_label slds-m-bottom_small">
+      Admin Setting for Opp App
+    </p>
+    <!-- / MASTHEAD -->
+    <!-- PAGE HEADER -->
+<div class="slds-page-header" role="banner">
+  <div class="slds-grid">
+    <div class="slds-col slds-has-flexi-truncate">
+      <!-- HEADING AREA -->
+      <p class="slds-text-title_caps slds-line-height_reset">Cust Object</p>
+      <h1 class="slds-page-header__title slds-truncate" title="Cust Obj Admin Settings">Admin settings</h1>
+      <!-- / HEADING AREA -->
+    </div>
+    <div class="slds-col slds-no-flex slds-grid slds-align-top">
+      <button class="slds-button slds-button_neutral">Save</button>
+    </div>
+      <div class="slds-col slds-no-flex slds-grid slds-align-top">
+      <button class="slds-button slds-button_neutral">Cancel</button>
+    </div>
+  </div>
+</div>
+<!-- / PAGE HEADER -->
+    <!-- PRIMARY CONTENT WRAPPER -->
+<div class="myapp">
+    <div class="slds-grid">
+        <div class="slds-col" >
+            1
+        </div>
+        <div class="slds-col" >
+            2
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-col" >
+            3
+        </div>
+        <div class="slds-col" >
+            4
+        </div>
+    </div>
+</div>
+<!-- / PRIMARY CONTENT WRAPPER -->
+  </div>
+</body>
+</html>
+</apex:page>
+
+
+   
+   

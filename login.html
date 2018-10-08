@@ -174,7 +174,7 @@ function particlesCtrl($scope,$http) {
 		 var myParams = {
 			'clientid' : '395825471326-8qu9odkhljioj10di7vpviccu171mmtb.apps.googleusercontent.com',
 			'cookiepolicy' : 'single_host_origin',
-			'callback' : '$scope.loginCallback',
+			'callback' : $scope.loginCallback,
 			'approvalprompt':'force',
 			'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
 		};

@@ -139,9 +139,8 @@ function particlesCtrl($scope,$http) {
 	$scope.showSuccess = false; // set Success Flag
 
 	//------- Authenticate function
-	$scope.authenticate = function (){
+	$scope.loginCallback = function(){
 		var flag= false;
-		
 		for(var i in validUsers){ // loop on users array
 			if($scope.user.username == validUsers[i].username && $scope.user.password == validUsers[i].password){
 				flag = true;
@@ -170,6 +169,46 @@ function particlesCtrl($scope,$http) {
 			$scope.showError = true;
 			$scope.showSuccess = false;
 		}
+	}
+	$scope.authenticate = function (){
+		 var myParams = {
+			'clientid' : '395825471326-8qu9odkhljioj10di7vpviccu171mmtb.apps.googleusercontent.com',
+			'cookiepolicy' : 'single_host_origin',
+			'callback' : '$scope.loginCallback',
+			'approvalprompt':'force',
+			'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
+		};
+		gapi.auth.signIn(myParams);
+		/*var flag= false;
+		
+		for(var i in validUsers){ // loop on users array
+			if($scope.user.username == validUsers[i].username && $scope.user.password == validUsers[i].password){
+				flag = true;
+				break;
+			}
+			else{
+				flag = false;
+			}				
+		}
+
+		//-------- set error or success flags
+		if(flag){
+			$scope.showError = false;
+			$scope.showSuccess = true;
+			$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+			$http.post('/',$scope.user).
+					then(function(response) {
+						console.log("posted successfully",response);
+						//consoel.log(response);
+						window.location=response.data;
+					}).catch(function(response) {
+						console.error("error in posting",response);
+					})
+		}
+		else{
+			$scope.showError = true;
+			$scope.showSuccess = false;
+		}*/
 
 
 	}

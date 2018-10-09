@@ -510,11 +510,21 @@ f='d';
            //client.broadcast.emit('broad',data);
     });
 	client.on('sfdcdetails', (data)=> {
+		try{
            console.log('sfdc',data);
 		   console.log('came here1');
 		   client.emit('sfdccoms', 20);
 		   client.emit('sfdccomslog', 'Execution Started');
-	var headers={
+		   access_token=data.token_type+' '+data["Handshake#access_token"];
+		   instance_url=data.instance_url.split('/')[2];
+		   client.emit('sfdccoms', 100);
+		   if(access_token){
+				console.log('connection'+'established');
+				client.emit('sfdccomslog', '<h4><u>4.Connection Status</u></h4>');
+			client.emit('sfdccomslog', 'Connection Established');
+			//getObjectDetails(v3,v4);
+			}
+	/*var headers={
 		'Content-Type':'application/json'
 	},
 	data={
@@ -525,8 +535,8 @@ f='d';
 		'password':data.password
 	};
 	client.emit('sfdccoms', 30);
-	client.emit('sfdccomslog', '<h4><u>1.Capturing Details</u></h4>');
-	client.emit('sfdccomslog', 'Reading of Details is Done');
+	//client.emit('sfdccomslog', '<h4><u>1.Capturing Details</u></h4>');
+	//client.emit('sfdccomslog', 'Reading of Details is Done');
 	var host=data.env=="Production"?'login.salesforce.com':'test.salesforce.com',
 	endpoint = '/services/oauth2/token?'+querystring.stringify(data);
 	console.log(data['client_id'],data['username'],data['password']);
@@ -538,24 +548,24 @@ f='d';
 		headers:headers
 	};
 	console.log('came hhh');
-	client.emit('sfdccomslog', '<h4><u>2.Forming Options for REST Call</u></h4>');
-	client.emit('sfdccomslog', 'endpoint url is formed');
-	client.emit('sfdccoms', 40);
+	//client.emit('sfdccomslog', '<h4><u>2.Forming Options for REST Call</u></h4>');
+	//client.emit('sfdccomslog', 'endpoint url is formed');
+	//client.emit('sfdccoms', 40);
 	var req=https.request(options,function(res){
 		res.setEncoding('utf-8');
 		var responseString='';
-		client.emit('sfdccoms', 50);
+		//client.emit('sfdccoms', 50);
 		res.on('data',function(respObj){
 			responseString+=respObj;
 		});
-		client.emit('sfdccoms', 70);
+		//client.emit('sfdccoms', 70);
 		res.on('end',function(){
-			try{
-				client.emit('sfdccomslog', '<h4><u>3.REST Call Result</u></h4>');
+			
+				//client.emit('sfdccomslog', '<h4><u>3.REST Call Result</u></h4>');
 			console.log('rstring',responseString);
 			var responseObject=JSON.parse(responseString);
 			//console.log(responseObject);
-			client.emit('sfdccomslog', ' response object is '+JSON.stringify(responseObject,null,2));
+			//client.emit('sfdccomslog', ' response object is '+JSON.stringify(responseObject,null,2));
 			access_token=responseObject.token_type+' '+responseObject.access_token;
 			instance_url=responseObject.instance_url.split('/')[2];
 			client.emit('sfdccoms', 100);
@@ -564,7 +574,8 @@ f='d';
 				client.emit('sfdccomslog', '<h4><u>4.Connection Status</u></h4>');
 			client.emit('sfdccomslog', 'Connection Established');}
 			//getObjectDetails(v3,v4);
-			}
+			}*/
+	}
 			catch(e){
 				
 				client.emit('sfdccomslog', '<h4><u>Error in Request</u></h4>');

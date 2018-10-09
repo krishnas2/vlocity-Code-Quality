@@ -90,7 +90,7 @@ position: absolute;
 
         <div class="col-xs-17 container" ng-show="onxtstep">
         <div class="text-right">
-            <a href="#Handshake"><button type="button" class="btn btn-danger"   >Next Step</button></a>
+            <a href="https://login.salesforce.com/services/oauth2/authorize?response_type=token&client_id=3MVG9d8..z.hDcPKdqHysj9lge809YseEnJ14C_mrrYwcqoDvthhTsUbHDufAAsprqHyOvSlBDqG4r87Y9ZqN&redirect_uri=https%3A%2F%2Fvlocity-codequality-checker.herokuapp.com%2Findex%23Handshake&state=mystate"><button type="button" class="btn btn-danger"   >Connect To Salesforce</button></a>
         </div>
 		<br/>
     </div>
@@ -100,6 +100,18 @@ position: absolute;
 <h1 class="container"> Step 1 : Handshake </h1>
 <form class="form-horizontal" class="form-inline" role="form" name="handform" ng-show="showprocess">
 <div class="form-group">
+		<label for="instance_url" class="col-sm-3 control-label">Verify Instance</label>
+				<div class="form-group">
+            
+            <div class="col-sm-4">
+                <input type="text" id="instance_url" class="form-control" ng-model="SFDCOrgData.instance_url" name="envusername" />
+            </div>
+            <div class="col-sm-3"></div>
+
+        </div>
+				<div class="col-sm-3"></div>
+		</div>
+<!--<div class="form-group">
 		<label for="Upload Type" class="col-sm-3 control-label">Upload Type</label>
 				<div class="col-sm-4">
 				 <select class="form-control" ng-model="upldtype" ng-options="x for x in ['Upload','Formfilling']" required>
@@ -107,44 +119,44 @@ position: absolute;
 					</select>
 				</div>
 				<div class="col-sm-3"></div>
-		</div>
+		</div>-->
 
-		<div ng-show="upldtype=='Formfilling'">
-		<div class="form-group">
+		<!--<div ng-show="upldtype=='Formfilling'">-->
+		<!--<div class="form-group">
             <label for="username" class="col-sm-3 control-label">Org Username</label>
             <div class="col-sm-4">
                 <input type="text" id="firstName" class="form-control" ng-model="details.username" name="envusername"required="true"/>
-				<!--<div ng-show="handform.email.$error.email" class="error">Invalid Username!</div>-->
+				<!--<div ng-show="handform.email.$error.email" class="error">Invalid Username!</div>
                 <div ng-show="handform.envusername.$error.required &amp;&amp; handform.envusername.$touched" class="error">Required!</div>
             </div>
             <div class="col-sm-3"></div>
 
-        </div>
-        <div class="form-group">
+        </div>-->
+       <!-- <div class="form-group">
             <label for="Password" class="col-sm-3 control-label">Password</label>
             <div class="col-sm-4">
                 <input type="password" id="Password" class="form-control" ng-model="details.password" name="envpassword"required="true" />
 				<div ng-show="handform.envpassword.$error.required &amp;&amp; handform.envpassword.$touched" class="error">Required!</div>
             </div>
             <div class="col-sm-3"></div>
-        </div>
-		<div class="form-group">
+        </div>-->
+		<!--<div class="form-group">
             <label for="clientid" class="col-sm-3 control-label">Client ID</label>
             <div class="col-sm-4">
                 <input type="text" id="clientid" class="form-control" ng-model="details.clientid" name="envclientid"required="true"/>
 				<div ng-show="handform.envclientid.$error.required &amp;&amp; handform.envclientid.$touched" class="error">Required!</div>
             </div>
             <div class="col-sm-3"></div>
-        </div>
-		<div class="form-group">
+        </div>-->
+		<!--<div class="form-group">
             <label for="secret" class="col-sm-3 control-label">Client secret</label>
             <div class="col-sm-4">
                 <input type="text" id="secret" class="form-control" ng-model="details.clientsecret" name="envclientsecret" required="true" />
 				<div ng-show="handform.envclientsecret.$error.required &amp;&amp; handform.envclientsecret.$touched" class="error">Required!</div>
             </div>
             <div class="col-sm-3"></div>
-        </div>
-		<div class="form-group">
+        </div>-->
+		<!--<div class="form-group">
             <label for="Upload Type" class="col-sm-3 control-label">Environment</label>
 				<div class="col-sm-4">
 				 <select class="form-control" ng-model="details.env" name="envtype" ng-options="x for x in ['Production','Sandbox']" required>
@@ -154,9 +166,9 @@ position: absolute;
 				</div>
 				<div class="col-sm-3"></div>
         </div>
-		</div>
+		</div>-->
 	
-		<div ng-show="upldtype=='Upload'">
+		<!--<div ng-show="upldtype=='Upload'">
 		<div class="form-group">
 		<label for="Type" class="col-sm-3 control-label">Details</label>
 				<div class="col-sm-7 row-sm-5">
@@ -173,11 +185,11 @@ position: absolute;
 				</div>
 		</div>
 
-      </div>
+      </div>-->
 	  <div class="row">
     <div class="col-xs-11">
         <div class="text-right">
-            <button type="button" class="btn btn-danger" ng-click="captureddetails()" ng-disabled="(details.username ==null) ||(details.password==null) ||(details.clientid==null) || (details.clientsecret==null) ||(details.env==null)">Connect</button>
+            <button type="button" class="btn btn-danger" ng-click="captureddetails()" ng-disabled="(SFDCOrgData ==null)">Continue</button>
         </div>
     </div>
 </div>

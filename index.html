@@ -368,6 +368,18 @@ app.config(['$compileProvider', function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
 }]);
 app.controller('utController', function($scope,$http, socket,$window) {
+if (window.location.hash) {
+	var message = decodeURIComponent(window.location.hash.substr(1)),
+	params = message.split('&'),
+	response = {};
+	params.forEach(function (param) {
+		var splitter = param.split('=');
+		response[splitter[0]] = splitter[1];
+	});
+	console.log(response); //POST request to be made
+	$scope.SFDCOrgData = response;
+	window.location.href = "#Handshake";
+}
 $scope.handshakesuccess=false;
 $scope.showsfdcconlog=true;
 $scope.showobjectconlog=true;
@@ -505,7 +517,7 @@ $scope.showjiraSuccess=true;
   
   $scope.captureddetails=function(){
 	$scope.showhandshakeprogress=true;
-	socket.emit('sfdcdetails', $scope.details);
+	socket.emit('sfdcdetails', $scope.SFDCOrgData);
   }
   $scope.capturedobj=function(){
   $scope.objjobscon='';
